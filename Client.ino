@@ -3,6 +3,7 @@
 
 #define SERVER_CONNECTION_RETRY_COUNT 5
 #define SERVER_CONNECTION_RETRY_DELAY 5000
+#define SERVER_RESPONSE_TIMEOUT 5000
 #define WIFI_CONNECTION_RETRY_DELAY 5000
 
 WiFiClient client;
@@ -64,6 +65,26 @@ void client_get(char *server, char *path)
 }
 
 /**
+ * Reads the response and prints it to the serial monitor.
+ */
+void client_read_response()
+{
+  unsigned long start_time = millis();
+  while (millis() - start_time < SERVER_RESPONSE_TIMEOUT) {
+    if (client.available()) {
+      while (client.available()) {
+        char c = client.read();
+        Serial.print(c);
+      }
+
+      return;
+    }
+  }
+
+  Serial.println("Warning: Server response timeout");
+}
+
+/**
  * ====
  * Setup
  * ====
@@ -82,22 +103,22 @@ void setup()
 
   int status = WL_IDLE_STATUS;
   while (status != WL_CONNECTED) {
-    Serial.print("Info: Trying to connect to SSID: ");
+    Serial.print("Info: Trying to connect to SSID ");
     Serial.println(NET_SSID);
 
     status = WiFi.begin(NET_SSID, NET_PASS);
     delay(WIFI_CONNECTION_RETRY_DELAY);
   }
 
-  Serial.print("Info: Connected to SSID: ");
+  Serial.print("Info: Connected to SSID ");
   Serial.println(WiFi.SSID());
 
   IPAddress ip = WiFi.localIP();
-  Serial.print("Info: Local IP Address: ");
+  Serial.print("Info: Local IP Address ");
   Serial.println(ip);
 
   long rssi = WiFi.RSSI();
-  Serial.print("Info: Signal Strength (RSSI): ");
+  Serial.print("Info: Signal Strength (RSSI) ");
   Serial.print(rssi);
   Serial.println(" dBm");
 }
@@ -116,6 +137,7 @@ void loop()
   char path[] = "/";
   client_get(server, path);
 
+  client_read_response();
   client_disconnect();
   while (true);
 }
