@@ -109,16 +109,13 @@ void setup()
  */
 void loop() 
 {
-  char server[] = "";
   int port = 80;
-
+  char server[] = "arduino-demo.requestcatcher.com";
   client_connect(server, port);
 
   char path[] = "/";
   client_get(server, path);
 
   client_disconnect();
-
-  // ...
   while (true);
 }
