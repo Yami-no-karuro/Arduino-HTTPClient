@@ -4,6 +4,7 @@
 #define SERVER_CONNECTION_RETRY_COUNT 5
 #define SERVER_CONNECTION_RETRY_DELAY 5000
 #define SERVER_RESPONSE_TIMEOUT 5000
+#define SERVER_RESPONSE_BUFFER_SIZE 1024
 #define WIFI_CONNECTION_RETRY_DELAY 5000
 
 WiFiClient client;
@@ -65,23 +66,36 @@ void client_get(char *server, char *path)
 }
 
 /**
- * Reads the response and prints it to the serial monitor.
+ * Reads the response into a buffer.
+ * 
+ * @param buffer - The buffer where the response will be stored.
+ * @param buffer_size - The maximum size of the buffer.
+ * @return - True if a response was received, False if timed out.
  */
-void client_read_response()
+bool client_read_response(char *buffer, size_t buffer_size)
 {
+  size_t index = 0;
   unsigned long start_time = millis();
-  while (millis() - start_time < SERVER_RESPONSE_TIMEOUT) {
-    if (client.available()) {
-      while (client.available()) {
-        char c = client.read();
-        Serial.print(c);
-      }
 
-      return;
+  while (millis() - start_time < SERVER_RESPONSE_TIMEOUT) {
+    while (client.available()) {
+      if (index < buffer_size - 1) {
+        buffer[index++] = client.read();
+      } else {
+        buffer[index] = '\0';
+        Serial.println("Warning: Response buffer overflow");
+        return false;
+      }
+    }
+
+    if (index > 0) {
+      buffer[index] = '\0';
+      return true;
     }
   }
 
   Serial.println("Warning: Server response timeout");
+  return false;
 }
 
 /**
@@ -134,10 +148,17 @@ void loop()
   char server[] = "arduino-demo.requestcatcher.com";
   client_connect(server, port);
 
+  Serial.println("Info: Executing HTTP request");
+
   char path[] = "/";
   client_get(server, path);
 
-  client_read_response();
+  Serial.println("Info: Reading HTTP response from server");
+
+  char response[SERVER_RESPONSE_BUFFER_SIZE];
+  if (client_read_response(response, SERVER_RESPONSE_BUFFER_SIZE))
+    Serial.println(response);
+
   client_disconnect();
   while (true);
 }
