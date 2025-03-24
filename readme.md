@@ -20,7 +20,7 @@ BUILD_PATH=build                    # <-- Enter the desired build directory path
 
 ### Credentials
 
-The main program includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
+The **Ino-HTTP-Client** program includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
 To make everything work properly create your own `secrets.h` like illustrated below.
 
 ```c
