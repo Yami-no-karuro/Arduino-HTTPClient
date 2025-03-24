@@ -1,6 +1,6 @@
-# Arduino - Web-Client 
+# Arduino - HTTP-Client 
 
-## Simple web client functionalities
+## Simple HTTP client functionalities
 
 ### Compile & Upload
 

@@ -76,7 +76,7 @@ void setup()
   long rssi = WiFi.RSSI();
   Serial.print("Info: Signal Strength (RSSI) ");
   Serial.print(rssi);
-  Serial.println(" dBm");
+  Serial.println(" dBm.");
 }
 
 void loop() 
