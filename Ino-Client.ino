@@ -1,11 +1,12 @@
 #include "WiFiS3.h"
 #include "./secrets.h"
 
+#define WIFI_CONNECTION_RETRY_DELAY 5000
+
 #define SERVER_CONNECTION_RETRY_COUNT 5
 #define SERVER_CONNECTION_RETRY_DELAY 5000
 #define SERVER_RESPONSE_TIMEOUT 5000
 #define SERVER_RESPONSE_BUFFER_SIZE 1024
-#define WIFI_CONNECTION_RETRY_DELAY 5000
 
 WiFiClient client;
 
@@ -42,7 +43,7 @@ void client_disconnect(bool flush = true)
 }
 
 /**
- * Executed a GET HTTP request to server. 
+ * Executes a GET HTTP request.
  * 
  * @param server - The server IP address or domain name.
  * @param path - The request path.
@@ -63,6 +64,28 @@ void client_get(char *server, char *path)
   client.println("User-Agent: Arduino UNO R4 Wifi");
   client.println("Connection: close");
   client.println();
+}
+
+/**
+ * Executes a POST HTTP request. 
+ * 
+ * @param server - The server IP address or domain name.
+ * @param path - The request path.
+ */
+void client_post(char *server, char *path)
+{
+  if (!client.connected())
+    return;
+
+  char request_line[256];
+  sprintf(request_line, "GET %s HTTP/1.1", path);
+  client.println(request_line);
+
+  char host_line[256];
+  sprintf(host_line, "Host: %s", server);
+  client.println(host_line);
+
+  // ...
 }
 
 /**
