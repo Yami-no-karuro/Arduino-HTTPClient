@@ -93,7 +93,7 @@ void client_post(char *server, char *path, PostParam *params, size_t num_params)
   snprintf(host_line, sizeof(host_line), "Host: %s", server);
   client.println(host_line);
 
-  char body[LG_BUFFER] = "";
+  char body[MD_BUFFER] = "";
   for (size_t i = 0; i < num_params; i++) {
     char param[SM_BUFFER];
     snprintf(param, sizeof(param), "%s=%s", params[i].key, params[i].value);
