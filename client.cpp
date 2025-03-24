@@ -1,8 +1,7 @@
-#include "./secrets.h"
-#include "./globals.h"
-
-#include "WiFiS3.h"
 #include <string.h>
+#include "WiFiS3.h"
+
+#include "./globals.h"
 
 #define WIFI_CONNECTION_RETRY_DELAY 5000
 
