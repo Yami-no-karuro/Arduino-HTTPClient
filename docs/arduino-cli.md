@@ -27,3 +27,11 @@ This will keep the **WSL 2 lightweight VM** active.
 - On **Powershell** run `usbipd bind --busid <bus_id>` to share the device.
 - On **Powershell** run `usbipd attach --wsl --busid <bus_id>` to attach the shared device to WSL.
 - On **Bash** run `lsusb` to verify that the shared device is visible.
+
+### Connecting a new Arduino board
+
+After connecting the board to your PC via USB cable, you should be able to check whether it's been recognized or not.
+
+- Run `arduino-cli board list` to list all the connected and available boards.
+- Identify the **Core** entry and install the required packages accordingly running `arduino-cli core install <core>`.
+- To verify the core packages installation run `arduino-cli core list`.
