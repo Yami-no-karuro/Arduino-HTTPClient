@@ -1,11 +1,11 @@
-# Arduino - HTTP-Client 
+# Arduino - HTTP-Client
 
 ## Simple WiFiS3 based HTTP client
 
 ### Introduction
 
 This project aims to be a "template" for applications that require specific interaction with [HTTP](https://en.wikipedia.org/wiki/HTTP) web services.  
-The goal is to create a simple way to execute [HTTP](https://en.wikipedia.org/wiki/HTTP) requests through some high-level functions built on top of the `WiFiS3` library.  
+The goal is to create a simple way to execute [HTTP](https://en.wikipedia.org/wiki/HTTP) requests through some high-level functions built on top of the [WiFiS3](https://github.com/arduino/ArduinoCore-renesas/tree/main/libraries/WiFiS3) library.  
 In the following examples, for demonstration purposes, [requestcatcher.com](https://requestcatcher.com/) services were used.
 
 ### Credentials
@@ -20,7 +20,7 @@ To make everything work properly create your own `secrets.h` like illustrated be
 
 ### Globals & Fine-Tuning
 
-The program make use of some specific constants such as `SM_BUFFER` stored in the `globals.h` file.  
+The program make use of some specific constants such as `SM_BUFFER` stored in the `src/globals.h` file.  
 The default values have been configured to be as generic as possible, before using the wrapper in a real case it is a good idea to fine tune those values to best fit the use case.
 
 ### Basics
@@ -49,7 +49,7 @@ Let's look at both cases in detail.
 **GET** request.  
 The `client_get()` function accepts 2 parameters:
 
-- `server`, the remote IP address or domain name.
+- `server`, the remote IP Address or Domain Name.
 - `port`, the remote port.
 
 ```c
@@ -66,7 +66,7 @@ The `client_get()` function accepts 2 parameters:
 **POST** request.
 The `client_post` function accepts 4 parameters:
 
-- `server`, the remote IP address or domain name.
+- `server`, the remote IP Address or Domain Name.
 - `port`, the remote port.
 - `params`, the `application/x-www-form-urlencoded` POST parameters.
 - `num_params`, the number of POST parameters.
