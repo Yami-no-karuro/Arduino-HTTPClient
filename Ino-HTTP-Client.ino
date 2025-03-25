@@ -14,7 +14,7 @@ void post_request_demo()
     return;
 
   // Example...
-  // Sending some example coordinates via latitude (lat) and longitude (log) parameters to the server.
+  // Sending some sort of coordinates via latitude (lat) and longitude (log) parameters to the server.
   // Using 4 decimal to simulate ~10m GPS tolerance.
 
   srand(millis());

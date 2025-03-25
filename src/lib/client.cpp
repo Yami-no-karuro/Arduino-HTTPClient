@@ -1,5 +1,4 @@
 #include <string.h>
-
 #include "WiFiS3.h"
 #include "client.h"
 #include "../globals.h"
