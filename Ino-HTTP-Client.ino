@@ -23,7 +23,6 @@ void post_request_demo()
 
   float lat = rand_float(-90.0f, 90.0f);
   float lon = rand_float(-180.0f, 180.0f);
-  unsigned long timestamp = millis();
 
   char lat_str[XXS_BUFFER];
   snprintf(lat_str, sizeof(lat_str), "%.4f", lat);
@@ -31,13 +30,9 @@ void post_request_demo()
   char lon_str[XXS_BUFFER];
   snprintf(lon_str, sizeof(lon_str), "%.4f", lon);
 
-  char timestamp_str[XXS_BUFFER];
-  snprintf(timestamp_str, sizeof(timestamp_str), "%ld", timestamp);
-
   PostParam params[] = {
     {"lat", lat_str},
-    {"lon", lon_str},
-    {"time", timestamp_str}
+    {"lon", lon_str}
   };
 
   char path[] = "/api/v1/coordinates";
