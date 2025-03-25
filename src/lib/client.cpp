@@ -15,7 +15,7 @@ extern WiFiClient client;
  */
 bool HTTPClient::httpConnect(const char *server, int port)
 {
-    for (int i = 0; i < SERVER_CONNECTION_RETRY_COUNT; i++) {
+    for (size_t i = 0; i < SERVER_CONNECTION_RETRY_COUNT; i++) {
         if (this->connect(server, port))
             return true;
 
@@ -54,7 +54,7 @@ void HTTPClient::httpGet(const char *server, const char *path)
     snprintf(host_line, sizeof(host_line), "Host: %s", server);
     this->println(host_line);
 
-    this->println("User-Agent: Arduino");
+    this->println("User-Agent: Arduino UNO R4 WiFi");
     this->println();
 }
 
@@ -89,7 +89,7 @@ void HTTPClient::httpPost(const char *server, const char *path, PostParam *param
             strncat(body, "&", sizeof(body));
     }
 
-    this->println("User-Agent: Arduino");
+    this->println("User-Agent: Arduino UNO R4 WiFi");
     this->println("Content-Type: application/x-www-form-urlencoded");
 
     char length_line[SM_BUFFER];
