@@ -2,13 +2,9 @@
 #include "secrets.h"
 #include "src/globals.h"
 #include "src/lib/client.h"
+#include "src/lib/utils.h"
 
 HTTPClient client;
-
-float rand_float(float min, float max)
-{
-    return min + ((float) rand() / (float) RAND_MAX) * (max - min);
-}
 
 void post_request_demo()
 {
@@ -18,7 +14,7 @@ void post_request_demo()
     return;
 
   // Example...
-  // Sending coordinates via latitude (lat) and longitude (log) parameters to the server.
+  // Sending some example coordinates via latitude (lat) and longitude (log) parameters to the server.
   // Using 4 decimal to simulate ~10m GPS tolerance.
 
   srand(millis());
