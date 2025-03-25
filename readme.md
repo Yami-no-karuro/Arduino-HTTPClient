@@ -33,7 +33,8 @@ Let's have a look at a simple connection configuration.
 ```c
   int port = 80;                                       // The server port, usually 80 (TCP/HTTP) or 443 (TCP/HTTPS).
   char server[] = "arduino-demo.requestcatcher.com";   // The server domain or IP address.
-  client_connect(server, port);
+  if (!client_connect(server, port))
+    return;
 
   // Request - Response interactions.
   // ... 
@@ -55,7 +56,8 @@ The `client_get()` function accepts 2 parameters:
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  client_connect(server, port);
+  if (!client_connect(server, port))
+    return;
 
   char path[] = "/";
   client_get(server, path);
@@ -74,7 +76,8 @@ The `client_post` function accepts 4 parameters:
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  client_connect(server, port);
+  if (!client_connect(server, port))
+    return;
 
   PostParam params[] = {
     {"foo", "bar"},
@@ -96,7 +99,8 @@ Let's extend the **GET** example to include response reading.
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  client_connect(server, port);
+  if (!client_connect(server, port))
+    return;
 
   char path[] = "/";
   client_get(server, path);

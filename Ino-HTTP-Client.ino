@@ -7,7 +7,8 @@ void post_request_demo()
 {
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  client_connect(server, port);
+  if (!client_connect(server, port))
+    return;
 
   PostParam params[] = {
     {"foo", "bar"},
@@ -29,7 +30,8 @@ void get_request_demo()
 {
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  client_connect(server, port);
+  if (!client_connect(server, port))
+    return;
 
   char path[] = "/";
   client_get(server, path);
