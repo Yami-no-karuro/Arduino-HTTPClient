@@ -3,6 +3,11 @@
 #include "src/globals.h"
 #include "src/lib/client.h"
 
+float rand_float(float min, float max)
+{
+    return min + ((float) rand() / (float) RAND_MAX) * (max - min);
+}
+
 void post_request_demo()
 {
   int port = 80;
@@ -10,12 +15,26 @@ void post_request_demo()
   if (!client_connect(server, port))
     return;
 
+  // Example...
+  // Sending coordinates via latitude (lat) and longitude (log) parameters to the server.
+  // Using 4 decimal to simulate ~10m GPS tolerance.
+
+  srand(millis());
+  float lat = rand_float(-90.0f, 90.0f);
+  float lon = rand_float(-180.0f, 180.0f);
+
+  char lat_str[XXS_BUFFER];
+  snprintf(lat_str, sizeof(lat_str), "%.4f", lat);
+
+  char lon_str[XXS_BUFFER];
+  snprintf(lon_str, sizeof(lon_str), "%.4f", lon);
+
   PostParam params[] = {
-    {"foo", "bar"},
-    {"fizz", "buzz"}
+    {"lat", lat_str},
+    {"lon", lon_str}
   };
 
-  char path[] = "/";
+  char path[] = "/api/v1/coordinates";
   size_t num_params = sizeof(params) / sizeof(params[0]);
   client_post(server, path, params, num_params);
 
@@ -33,7 +52,10 @@ void get_request_demo()
   if (!client_connect(server, port))
     return;
 
-  char path[] = "/";
+  // Example...
+  // Requesting some sort of system logs from the server.
+
+  char path[] = "/api/v1/logs";
   client_get(server, path);
 
   char response[LG_BUFFER];
