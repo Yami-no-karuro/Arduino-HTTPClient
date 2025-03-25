@@ -2,45 +2,66 @@
 #include "secrets.h"
 #include "src/globals.h"
 #include "src/lib/client.h"
+#include "src/lib/utils.h"
+
+HTTPClient client;
 
 void post_request_demo()
 {
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  if (!client_connect(server, port))
+  if (!client.httpConnect(server, port))
     return;
 
+  // Example...
+  // Sending some sort of coordinates via latitude (lat) and longitude (log) parameters to the server.
+  // Using 4 decimal to simulate ~10m GPS tolerance.
+
+  srand(millis());
+
+  float lat = rand_float(-90.0f, 90.0f);
+  float lon = rand_float(-180.0f, 180.0f);
+
+  char lat_str[XXS_BUFFER];
+  snprintf(lat_str, sizeof(lat_str), "%.4f", lat);
+
+  char lon_str[XXS_BUFFER];
+  snprintf(lon_str, sizeof(lon_str), "%.4f", lon);
+
   PostParam params[] = {
-    {"foo", "bar"},
-    {"fizz", "buzz"}
+    {"lat", lat_str},
+    {"lon", lon_str}
   };
 
-  char path[] = "/";
+  char path[] = "/api/v1/coordinates";
   size_t num_params = sizeof(params) / sizeof(params[0]);
-  client_post(server, path, params, num_params);
+  client.httpPost(server, path, params, num_params);
 
   char response[LG_BUFFER];
-  if (client_read_response(response, LG_BUFFER))
+  if (client.httpReadResponse(response, LG_BUFFER))
     Serial.println(response);
 
-  client_disconnect();
+  client.httpDisconnect();
 }
 
 void get_request_demo()
 {
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  if (!client_connect(server, port))
+  if (!client.httpConnect(server, port))
     return;
 
-  char path[] = "/";
-  client_get(server, path);
+  // Example...
+  // Requesting some sort of system logs from the server.
+
+  char path[] = "/api/v1/logs";
+  client.httpGet(server, path);
 
   char response[LG_BUFFER];
-  if (client_read_response(response, LG_BUFFER))
+  if (client.httpReadResponse(response, LG_BUFFER))
     Serial.println(response);
 
-  client_disconnect();
+  client.httpDisconnect();
 }
 
 void setup() 
