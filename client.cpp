@@ -68,7 +68,7 @@ void client_get(char *server, char *path)
   snprintf(host_line, sizeof(host_line), "Host: %s", server);
   client.println(host_line);
 
-  client.println("User-Agent: Arduino UNO R4 Wifi");
+  client.println("User-Agent: Arduino");
   client.println();
 }
 
@@ -103,7 +103,7 @@ void client_post(char *server, char *path, PostParam *params, size_t num_params)
       strncat(body, "&", sizeof(body));
   }
 
-  client.println("User-Agent: Arduino UNO R4 Wifi");
+  client.println("User-Agent: Arduino");
   client.println("Content-Type: application/x-www-form-urlencoded");
 
   char length_line[SM_BUFFER];
