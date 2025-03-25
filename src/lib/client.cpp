@@ -1,27 +1,17 @@
 #include <string.h>
+
 #include "WiFiS3.h"
-
-#include "./globals.h"
-
-#define WIFI_CONNECTION_RETRY_DELAY 5000
-
-#define SERVER_CONNECTION_RETRY_COUNT 5
-#define SERVER_CONNECTION_RETRY_DELAY 5000
-#define SERVER_RESPONSE_TIMEOUT 5000
+#include "client.h"
+#include "../globals.h"
 
 WiFiClient client;
 
-typedef struct {
-    char *key;
-    char *value;
-} PostParam;
-
 /**
- * Connects to the provided IP address (or domain name) and port. 
+ * Connects to the provided IP Address (or Domain Name via DNS lookup) and port. 
  * 
- * @param server - The server IP address or domain name.
+ * @param server - The server IP Address or Domain Name.
  * @param port - The server port.
- * @return - "true" on success, "false" on failure.
+ * @return - True on success, False on failure.
  */
 bool client_connect(char *server, int port)
 {
@@ -37,22 +27,18 @@ bool client_connect(char *server, int port)
 }
 
 /**
- * Disconnects from the server.
- * 
- * @param flush - Whether to flush the unread client data.
+ * Closes the connection (client content is flushed).
  */
-void client_disconnect(bool flush = true)
+void client_disconnect()
 {
-  if (flush)
-    client.flush();
-
+  client.flush();
   client.stop();
 }
 
 /**
  * Executes a GET HTTP request.
  * 
- * @param server - The server IP address or domain name.
+ * @param server - The server IP Address or Domain Name.
  * @param path - The request path.
  */
 void client_get(char *server, char *path)
@@ -68,16 +54,16 @@ void client_get(char *server, char *path)
   snprintf(host_line, sizeof(host_line), "Host: %s", server);
   client.println(host_line);
 
-  client.println("User-Agent: Arduino UNO R4 Wifi");
+  client.println("User-Agent: Arduino");
   client.println();
 }
 
 /**
  * Executes a POST HTTP request. 
  * 
- * @param server - The server IP address or domain name.
+ * @param server - The server IP Address or Domain Name.
  * @param path - The request path.
- * @param params - The POST parameters in "x-www-form-urlencoded".
+ * @param params - The POST parameters in "x-www-form-urlencoded" format.
  * @param num_params - The number of POST parameters.
  */
 void client_post(char *server, char *path, PostParam *params, size_t num_params)
@@ -103,7 +89,7 @@ void client_post(char *server, char *path, PostParam *params, size_t num_params)
       strncat(body, "&", sizeof(body));
   }
 
-  client.println("User-Agent: Arduino UNO R4 Wifi");
+  client.println("User-Agent: Arduino");
   client.println("Content-Type: application/x-www-form-urlencoded");
 
   char length_line[SM_BUFFER];
@@ -115,7 +101,7 @@ void client_post(char *server, char *path, PostParam *params, size_t num_params)
 }
 
 /**
- * Reads the response into a buffer.
+ * Reads the HTTP Response into a buffer.
  * 
  * @param buffer - The buffer where the response will be stored.
  * @param buffer_size - The maximum size of the buffer.

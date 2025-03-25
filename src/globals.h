@@ -1,0 +1,7 @@
+#define XXS_BUFFER 64
+#define XS_BUFFER 128
+#define SM_BUFFER 256 
+#define MD_BUFFER 512
+#define LG_BUFFER 1024
+#define XL_BUFFER 2048
+#define XXL_BUFFER 4096
