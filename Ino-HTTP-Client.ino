@@ -1,8 +1,7 @@
 #include "WiFiS3.h"
-
-#include "./secrets.h"
-#include "./globals.h"
-#include "./client.h"
+#include "secrets.h"
+#include "src/globals.h"
+#include "src/lib/client.h"
 
 void post_request_demo()
 {
@@ -84,6 +83,5 @@ void loop()
   get_request_demo();
   post_request_demo();
 
-  // ...
   while (true);
 }

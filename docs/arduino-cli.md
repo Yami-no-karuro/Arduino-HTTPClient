@@ -4,6 +4,7 @@
 
 ### Intro
 
+This **Getting Started Guide** was extracted from the original source at [docs.arduino.cc](https://docs.arduino.cc/arduino-cli/).  
 [Arduino CLI](https://docs.arduino.cc/arduino-cli/) provides all the features you can find in the [Arduino IDE](https://www.arduino.cc/en/software).  
 The `arduino-cli` utility is a container of commands and each command has its own dedicated help text that can be shown with the `help` command.
 

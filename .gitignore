@@ -1,2 +1,7 @@
+# Defaults
 /build
 secrets.h
+
+# IDEs
+.vscode
+.idea
