@@ -7,11 +7,11 @@
 extern WiFiClient client;
 
 /**
- * Connects to the provided IP Address (or Domain Name via DNS lookup) and port.
+ * Connects to the provided IP Address (or domain name via DNS lookup) and port.
  * 
- * @param server - The server IP Address or Domain Name.
+ * @param server - The server IP address or domain name.
  * @param port - The server port.
- * @return - True on success, False on failure.
+ * @return - true on success, false on failure.
  */
 bool HTTPClient::httpConnect(const char *server, int port)
 {
@@ -38,7 +38,7 @@ void HTTPClient::httpDisconnect()
 /**
  * Executes a GET HTTP request.
  * 
- * @param server - The server IP Address or Domain Name.
+ * @param server - The server IP address or domain name.
  * @param path - The request path.
  */
 void HTTPClient::httpGet(const char *server, const char *path)
@@ -61,7 +61,7 @@ void HTTPClient::httpGet(const char *server, const char *path)
 /**
  * Executes a POST HTTP request. 
  * 
- * @param server - The server IP Address or Domain Name.
+ * @param server - The server IP address or domain name.
  * @param path - The request path.
  * @param params - The POST parameters in "x-www-form-urlencoded" format.
  * @param num_params - The number of POST parameters.
@@ -105,7 +105,7 @@ void HTTPClient::httpPost(const char *server, const char *path, PostParam *param
  * 
  * @param buffer - The buffer where the response will be stored.
  * @param buffer_size - The maximum size of the buffer.
- * @return - True if a response was received, False if timed out.
+ * @return - true if a response was received, false if timed out.
  */
 bool HTTPClient::httpReadResponse(char *buffer, size_t buffer_size)
 {
@@ -116,11 +116,12 @@ bool HTTPClient::httpReadResponse(char *buffer, size_t buffer_size)
         while (this->available()) {
             if (index < buffer_size - 1) {
                 buffer[index++] = this->read();
-            } else {
-                buffer[index] = '\0';
-                Serial.println("Error: Response buffer overflow.");
-                return false;
+                continue;
             }
+
+            buffer[index] = '\0';
+            Serial.println("Error: Response buffer overflow.");
+            return false;
         }
 
         if (index > 0) {
