@@ -25,30 +25,30 @@ The default values have been configured to be as generic as possible, before usi
 
 ### Basics
 
-Every [HTTP](https://en.wikipedia.org/wiki/HTTP) interaction always starts with `client_connect()` and must always end with `client_disconnect()`.  
-The `client_connect()` function wraps the standard `client.connect()` call to provide **retry-on-failure** functionalities.  
+Every [HTTP](https://en.wikipedia.org/wiki/HTTP) interaction always starts with `client.httpConnect()` and must always end with `client.httpDisconnect()`.  
+The `client.httpConnect()` function wraps the standard `client.connect()` call to provide **retry-on-failure** functionalities.  
 By default the program awaits `SERVER_CONNECTION_RETRY_DELAY` (5000) for `SERVER_CONNECTION_RETRY_COUNT` (5) times.  
 Let's have a look at a simple connection configuration.
 
 ```c
   int port = 80;                                       // The server port, usually 80 (TCP/HTTP) or 443 (TCP/HTTPS).
   char server[] = "arduino-demo.requestcatcher.com";   // The server domain or IP address.
-  if (!client_connect(server, port))
+  if (!client.httpConnect(server, port))
     return;
 
   // Request - Response interactions.
   // ... 
 
-  client_disconnect();
+  client.httpDisconnect();
 ```
 
 ### Executing HTTP Request via wrapper API
 
-The `client.cpp` wrapper supports basic **GET** and **POST** (`application/x-www-form-urlencoded`) requests via `client_get()` and `client_post()`.  
+The `client.cpp` wrapper supports basic **GET** and **POST** (`application/x-www-form-urlencoded`) requests via `client.httpGet()` and `client.httpPost()`.  
 Let's look at both cases in detail.
 
 **GET** request.  
-The `client_get()` function accepts 2 parameters:
+The `client.httpGet()` function accepts 2 parameters:
 
 - `server`, the remote IP Address or Domain Name.
 - `port`, the remote port.
@@ -56,17 +56,17 @@ The `client_get()` function accepts 2 parameters:
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  if (!client_connect(server, port))
+  if (!client.httpConnect(server, port))
     return;
 
   char path[] = "/";
-  client_get(server, path);
+  client.httpGet(server, path);
 
-  client_disconnect();
+  client.httpDisconnect();
 ```
 
 **POST** request.
-The `client_post` function accepts 4 parameters:
+The `client.httpPost()` function accepts 4 parameters:
 
 - `server`, the remote IP Address or Domain Name.
 - `port`, the remote port.
@@ -76,7 +76,7 @@ The `client_post` function accepts 4 parameters:
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  if (!client_connect(server, port))
+  if (!client.httpConnect(server, port))
     return;
 
   PostParam params[] = {
@@ -86,9 +86,9 @@ The `client_post` function accepts 4 parameters:
 
   char path[] = "/";
   size_t num_params = sizeof(params) / sizeof(params[0]);
-  client_post(server, path, params, num_params);
+  client.httpPost(server, path, params, num_params);
 
-  client_disconnect();
+  client.httpDisconnect();
 ```
 
 ### Reading the HTTP Response
@@ -99,17 +99,17 @@ Let's extend the **GET** example to include response reading.
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
-  if (!client_connect(server, port))
+  if (!client.httpConnect(server, port))
     return;
 
   char path[] = "/";
-  client_get(server, path);
+  client.httpGet(server, path);
 
   char response[LG_BUFFER];
-  if (client_read_response(response, LG_BUFFER))
+  if (client.httpReadResponse(response, LG_BUFFER))
     Serial.println(response);
 
-  client_disconnect();
+  client.httpDisconnect();
 ```
 
 ### Compile & Upload
