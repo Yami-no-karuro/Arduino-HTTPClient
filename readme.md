@@ -10,13 +10,18 @@ In the following examples, for demonstration purposes, [requestcatcher.com](http
 
 ### Credentials
 
-The **Ino-HTTP-Client** sketch includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
+The `Ino-HTTP-Client.ino` sketch includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
 To make everything work properly create your own `secrets.h` like illustrated below.
 
 ```c
 #define NET_SSID "<ssid>"
 #define NET_PASS "<password>"
 ```
+
+### Globals & Fine-Tuning
+
+The program make use of some specific constants such as `SM_BUFFER` stored in the `globals.h` file.  
+The default values have been configured to be as generic as possible, before using the wrapper in a real case it is a good idea to fine tune those values to best fit the use case.
 
 ### Basics
 
