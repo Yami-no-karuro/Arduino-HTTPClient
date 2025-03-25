@@ -1,26 +1,16 @@
 # Arduino - HTTP-Client 
 
-## Simple HTTP client functionalities
+## Simple WiFiS3 based HTTP client
 
-### Compile & Upload
+### Introduction
 
-Pre-made `sh` commands are available for compiling (`compile.sh`) and uploading (`upload.sh`) the code.  
-Before using the commands make sure the configurations are correct.
-
-```bash
-#!/bin/bash
-
-# ====
-# Global variables
-# ====
-
-FQBN=arduino:renesas_uno:unor4wifi  # <-- Enter the desired FQBN, should be something like "arduino:renesas_uno:unor4wifi"
-BUILD_PATH=build                    # <-- Enter the desired build directory path, should be somethind like "build"
-```
+This project aims to be a "template" for applications that require specific interaction with [HTTP](https://en.wikipedia.org/wiki/HTTP) web services.  
+The goal is to create a simple way to execute [HTTP](https://en.wikipedia.org/wiki/HTTP) requests through some high-level functions built on top of the `WiFiS3` library.  
+In the following examples, for demonstration purposes, [requestcatcher.com](https://requestcatcher.com/) services were used.
 
 ### Credentials
 
-The **Ino-HTTP-Client** program includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
+The **Ino-HTTP-Client** sketch includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
 To make everything work properly create your own `secrets.h` like illustrated below.
 
 ```c
@@ -30,26 +20,73 @@ To make everything work properly create your own `secrets.h` like illustrated be
 
 ### Basics
 
-This library provides a simple API to facilitate interaction with [HTTP](https://en.wikipedia.org/wiki/HTTP) web services.  
-The `client_connect` function also supports **DNS lookups**.  
-A simple HTTP interaction always starts with `client_connect(...)` and ends with `client_disconnect()`.
+Every [HTTP](https://en.wikipedia.org/wiki/HTTP) interaction always starts with `client_connect()` and must always end with `client_disconnect()`.  
+The `client_connect()` function wraps the standard `client.connect()` call to provide **retry-on-failure** functionalities.  
+By default the program awaits `SERVER_CONNECTION_RETRY_DELAY` (5000) for `SERVER_CONNECTION_RETRY_COUNT` (5) times.  
+Let's have a look at a simple connection configuration.
+
+```c
+  int port = 80;                                       // The server port, usually 80 (TCP/HTTP) or 443 (TCP/HTTPS).
+  char server[] = "arduino-demo.requestcatcher.com";   // The server domain or IP address.
+  client_connect(server, port);
+
+  // Request - Response interactions.
+  // ... 
+
+  client_disconnect();
+```
+
+### Executing HTTP Request via wrapper API
+
+The `client.cpp` wrapper supports basic **GET** and **POST** (`application/x-www-form-urlencoded`) requests via `client_get()` and `client_post()`.  
+Let's look at both cases in detail.
+
+**GET** request.  
+The `client_get()` function accepts 2 parameters:
+
+- `server`, the remote IP address or domain name.
+- `port`, the remote port.
 
 ```c
   int port = 80;
   char server[] = "arduino-demo.requestcatcher.com";
   client_connect(server, port);
 
-  // ... 
+  char path[] = "/";
+  client_get(server, path);
 
   client_disconnect();
 ```
 
-### API
+**POST** request.
+The `client_post` function accepts 4 parameters:
 
-This library supports **GET** and **POST** requests via `client_get` and `client_post` functions.  
-Let's have a look at some examples.
+- `server`, the remote IP address or domain name.
+- `port`, the remote port.
+- `params`, the `application/x-www-form-urlencoded` POST parameters.
+- `num_params`, the number of POST parameters.
 
-Simple **GET** HTTP request.
+```c
+  int port = 80;
+  char server[] = "arduino-demo.requestcatcher.com";
+  client_connect(server, port);
+
+  PostParam params[] = {
+    {"foo", "bar"},
+    {"fizz", "buzz"}
+  };
+
+  char path[] = "/";
+  size_t num_params = sizeof(params) / sizeof(params[0]);
+  client_post(server, path, params, num_params);
+
+  client_disconnect();
+```
+
+### Reading the HTTP Response
+
+The `client.cpp` wrapper supports a basic way to read the server response to a buffer.  
+Let's extend the **GET** example to include response reading.
 
 ```c
   int port = 80;
@@ -66,25 +103,18 @@ Simple **GET** HTTP request.
   client_disconnect();
 ```
 
-Simple **POST** HTTP request.
+### Compile & Upload
 
-```c
-  int port = 80;
-  char server[] = "arduino-demo.requestcatcher.com";
-  client_connect(server, port);
+Pre-made `sh` commands are available for compiling (`compile.sh`) and uploading (`upload.sh`) the code.  
+Before using the commands make sure the configurations are correct.
 
-  PostParam params[] = {
-    {"foo", "bar"},
-    {"fizz", "buzz"}
-  };
+```bash
+#!/bin/bash
 
-  char path[] = "/";
-  size_t num_params = sizeof(params) / sizeof(params[0]);
-  client_post(server, path, params, num_params);
+# ====
+# Global variables
+# ====
 
-  char response[LG_BUFFER];
-  if (client_read_response(response, LG_BUFFER))
-    Serial.println(response);
-
-  client_disconnect();
+FQBN=arduino:renesas_uno:unor4wifi  # <-- Enter the desired FQBN, should be something like "arduino:renesas_uno:unor4wifi"
+BUILD_PATH=build                    # <-- Enter the desired build directory path, should be somethind like "build"
 ```
