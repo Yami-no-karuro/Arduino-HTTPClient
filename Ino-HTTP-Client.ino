@@ -15,7 +15,6 @@ void post_request_demo()
 
   // Example...
   // Sending some sort of coordinates via latitude (lat) and longitude (log) to the server.
-  // Using 4 decimal to simulate ~10m GPS tolerance.
 
   srand(millis());
   float lat = rand_float(-90.0f, 90.0f);
