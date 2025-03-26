@@ -18,7 +18,7 @@ class HTTPClient: public WiFiClient
         bool httpConnect(const char *server, int port);
         void httpDisconnect();
         void httpGet(const char *server, const char *path);
-        void httpPost(const char *server, const char *path, PostParam *params, size_t num_params);
+        void httpPost(const char *server, const char *path, const char *payload, const char *content_type);
         bool httpReadResponse(char *buffer, size_t buffer_size);
 };
 

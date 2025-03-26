@@ -14,28 +14,19 @@ void post_request_demo()
     return;
 
   // Example...
-  // Sending some sort of coordinates via latitude (lat) and longitude (log) parameters to the server.
+  // Sending some sort of coordinates via latitude (lat) and longitude (log) to the server.
   // Using 4 decimal to simulate ~10m GPS tolerance.
 
   srand(millis());
-
   float lat = rand_float(-90.0f, 90.0f);
   float lon = rand_float(-180.0f, 180.0f);
 
-  char lat_str[XXS_BUFFER];
-  snprintf(lat_str, sizeof(lat_str), "%.4f", lat);
-
-  char lon_str[XXS_BUFFER];
-  snprintf(lon_str, sizeof(lon_str), "%.4f", lon);
-
-  PostParam params[] = {
-    {"lat", lat_str},
-    {"lon", lon_str}
-  };
+  char payload[MD_BUFFER];
+  snprintf(payload, sizeof(payload), "lat=%.4f&lon=%.4f", lat, lon);
 
   char path[] = "/api/v1/coordinates";
-  size_t num_params = sizeof(params) / sizeof(params[0]);
-  client.httpPost(server, path, params, num_params);
+  char content_type[] = "application/x-www-form-urlencoded";
+  client.httpPost(server, path, payload, content_type);
 
   char response[LG_BUFFER];
   if (client.httpReadResponse(response, LG_BUFFER))
