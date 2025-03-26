@@ -54,6 +54,7 @@ void HTTPClient::httpGet(const char *server, const char *path)
     this->println(host_line);
 
     this->println("User-Agent: Arduino UNO R4 WiFi");
+    this->println("Connection: close");
     this->println();
 }
 
@@ -62,10 +63,10 @@ void HTTPClient::httpGet(const char *server, const char *path)
  * 
  * @param server - The server IP address or domain name.
  * @param path - The request path.
- * @param params - The POST parameters in "x-www-form-urlencoded" format.
- * @param num_params - The number of POST parameters.
+ * @param payload - The request payload.
+ * @param content_type - The request content-type.
  */
-void HTTPClient::httpPost(const char *server, const char *path, PostParam *params, size_t num_params)
+void HTTPClient::httpPost(const char *server, const char *path, const char *payload, const char *content_type)
 {
     if (!this->connected())
         return;
@@ -74,28 +75,22 @@ void HTTPClient::httpPost(const char *server, const char *path, PostParam *param
     snprintf(request_line, sizeof(request_line), "POST %s HTTP/1.1", path);
     this->println(request_line);
 
-    char host_line[SM_BUFFER];
+    char host_line[XS_BUFFER];
     snprintf(host_line, sizeof(host_line), "Host: %s", server);
     this->println(host_line);
 
-    char body[MD_BUFFER] = "";
-    for (size_t i = 0; i < num_params; i++) {
-        char param[SM_BUFFER];
-        snprintf(param, sizeof(param), "%s=%s", params[i].key, params[i].value);
-        strncat(body, param, sizeof(body));
-
-        if (i < (num_params - 1))
-            strncat(body, "&", sizeof(body));
-    }
-
     this->println("User-Agent: Arduino UNO R4 WiFi");
-    this->println("Content-Type: application/x-www-form-urlencoded");
+    this->println("Connection: close");
 
-    char length_line[SM_BUFFER];
-    snprintf(length_line, sizeof(length_line), "Content-Length: %ld\n\n", strlen(body));
+    char content_type_line[XS_BUFFER];
+    snprintf(content_type_line, sizeof(content_type_line), "Content-Type: %s", content_type);
+    this->println(content_type_line);
+
+    char length_line[XS_BUFFER];
+    snprintf(length_line, sizeof(length_line), "Content-Length: %ld\n\n", strlen(payload));
     this->print(length_line);
 
-    this->println(body);
+    this->println(payload);
     this->println();
 }
 
@@ -110,10 +105,9 @@ bool HTTPClient::httpReadResponse(char *buffer, size_t buffer_size)
 {
     size_t index = 0;
     unsigned long start_time = millis();
-
     while (millis() - start_time < SERVER_RESPONSE_TIMEOUT) {
         while (this->available()) {
-            if (index < buffer_size - 1) {
+            if (index < (buffer_size - 1)) {
                 buffer[index++] = this->read();
                 continue;
             }
