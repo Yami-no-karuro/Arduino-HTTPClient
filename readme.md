@@ -42,74 +42,96 @@ Let's have a look at a simple connection configuration.
   client.httpDisconnect();
 ```
 
-### Executing HTTP Request via wrapper API
+### Executing HTTP Requests via wrapper API
 
-The `client.cpp` wrapper supports basic **GET** and **POST** (`application/x-www-form-urlencoded`) requests via `client.httpGet()` and `client.httpPost()`.  
+The `client.cpp` wrapper supports basic **GET** and **POST** requests via `client.httpGet()` and `client.httpPost()`.  
 Let's look at both cases in detail.
 
 **GET** request.  
 The `client.httpGet()` function accepts 2 parameters:
 
-- `server`, the remote IP Address or Domain Name.
+- `server`, the remote IP address or domain name.
 - `port`, the remote port.
 
 ```c
-  int port = 80;
-  char server[] = "arduino-demo.requestcatcher.com";
-  if (!client.httpConnect(server, port))
-    return;
+  void get_request_demo()
+  {
+    int port = 80;
+    char server[] = "arduino-demo.requestcatcher.com";
+    if (!client.httpConnect(server, port))
+      return;
 
-  char path[] = "/";
-  client.httpGet(server, path);
+    // Example...
+    // Requesting some sort of system logs from the server.
 
-  client.httpDisconnect();
+    char path[] = "/api/v1/logs";
+    client.httpGet(server, path);
+
+    client.httpDisconnect();
+  }
 ```
 
 **POST** request.
 The `client.httpPost()` function accepts 4 parameters:
 
-- `server`, the remote IP Address or Domain Name.
+- `server`, the remote IP address or domain name.
 - `port`, the remote port.
-- `params`, the `application/x-www-form-urlencoded` POST parameters.
-- `num_params`, the number of POST parameters.
+- `payload`, the POST request payload.
+- `content_type`, the payload content-type.
 
 ```c
-  int port = 80;
-  char server[] = "arduino-demo.requestcatcher.com";
-  if (!client.httpConnect(server, port))
-    return;
+  void post_request_demo()
+  {
+    int port = 80;
+    char server[] = "arduino-demo.requestcatcher.com";
+    if (!client.httpConnect(server, port))
+      return;
 
-  PostParam params[] = {
-    {"foo", "bar"},
-    {"fizz", "buzz"}
-  };
+    // Example...
+    // Sending some sort of coordinates via latitude (lat) and longitude (log) to the server.
+    // Using 4 decimal to simulate ~10m GPS tolerance.
 
-  char path[] = "/";
-  size_t num_params = sizeof(params) / sizeof(params[0]);
-  client.httpPost(server, path, params, num_params);
+    srand(millis());
+    float lat = rand_float(-90.0f, 90.0f);
+    float lon = rand_float(-180.0f, 180.0f);
 
-  client.httpDisconnect();
+    char payload[MD_BUFFER];
+    snprintf(payload, sizeof(payload), "lat=%.4f&lon=%.4f", lat, lon);
+
+    char path[] = "/api/v1/coordinates";
+    char content_type[] = "application/x-www-form-urlencoded";
+    client.httpPost(server, path, payload, content_type);
+
+    client.httpDisconnect();
+  }
 ```
 
 ### Reading the HTTP Response
 
 The `client.cpp` wrapper supports a basic way to read the server response to a buffer.  
-Let's extend the **GET** example to include response reading.
+Let's extend the previous **GET** request example to include response reading.
 
 ```c
-  int port = 80;
-  char server[] = "arduino-demo.requestcatcher.com";
-  if (!client.httpConnect(server, port))
-    return;
+  void get_request_demo()
+  {
+    int port = 80;
+    char server[] = "arduino-demo.requestcatcher.com";
+    if (!client.httpConnect(server, port))
+      return;
 
-  char path[] = "/";
-  client.httpGet(server, path);
+    // Example...
+    // Requesting some sort of system logs from the server.
 
-  char response[LG_BUFFER];
-  if (client.httpReadResponse(response, LG_BUFFER))
-    Serial.println(response);
+    char path[] = "/api/v1/logs";
+    client.httpGet(server, path);
 
-  client.httpDisconnect();
+    // Reads the response and prints it on the serial.
+    char response[LG_BUFFER];
+    if (client.httpReadResponse(response, LG_BUFFER))
+      Serial.println(response);
+
+    client.httpDisconnect();
+  }
 ```
 
 ### Compile & Upload
