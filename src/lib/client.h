@@ -7,11 +7,6 @@
 #define SERVER_CONNECTION_RETRY_DELAY 5000
 #define SERVER_RESPONSE_TIMEOUT 5000
 
-typedef struct {
-    char *key;
-    char *value;
-} PostParam;
-
 class HTTPClient: public WiFiClient 
 {
     public:
