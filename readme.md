@@ -1,4 +1,4 @@
-# Arduino - HTTPClient
+# Arduino - HTTP-Client
 
 ## Simple WiFiS3 based HTTP client
 
