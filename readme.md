@@ -1,4 +1,4 @@
-# Arduino - HTTPClient
+# Arduino - HTTP-Client
 
 ## Simple WiFiS3 based HTTP client
 
@@ -10,7 +10,7 @@ In the following examples, for demonstration purposes, [requestcatcher.com](http
 
 ### Credentials
 
-The `HTTPClient.ino` sketch includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
+The `HTTP-Client.ino` sketch includes `secrets.h` and makes use of the `NET_SSID` and `NET_PASS` constants.  
 To make everything work properly create your own `secrets.h` like illustrated below.
 
 ```c
